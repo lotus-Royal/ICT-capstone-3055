@@ -1,0 +1,300 @@
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { DatePicker } from "@/components/date-picker"
+import { DashboardNav } from "@/components/dashboard-nav"
+import { Download, FileText, Filter, Printer } from "lucide-react"
+
+export default function ReportsPage() {
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date())
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date())
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <div className="flex flex-1">
+        <DashboardNav />
+        <main className="flex-1 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold tracking-tight">Report Generation</h1>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Filter className="mr-2 h-4 w-4" />
+                Filters
+              </Button>
+              <Button variant="outline" size="sm">
+                <Printer className="mr-2 h-4 w-4" />
+                Print
+              </Button>
+              <Button size="sm">
+                <Download className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+            </div>
+          </div>
+          <Tabs defaultValue="patient" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="patient">Patient Reports</TabsTrigger>
+              <TabsTrigger value="inventory">Inventory Reports</TabsTrigger>
+              <TabsTrigger value="financial">Financial Reports</TabsTrigger>
+              <TabsTrigger value="staff">Staff Reports</TabsTrigger>
+            </TabsList>
+            <TabsContent value="patient" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Patient Reports</CardTitle>
+                  <CardDescription>
+                    Generate comprehensive reports about patient visits, demographics, and treatments.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="report-type">Report Type</Label>
+                      <Select defaultValue="visits">
+                        <SelectTrigger id="report-type">
+                          <SelectValue placeholder="Select report type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="visits">Patient Visits</SelectItem>
+                          <SelectItem value="demographics">Demographics</SelectItem>
+                          <SelectItem value="treatments">Treatments</SelectItem>
+                          <SelectItem value="conditions">Medical Conditions</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="format">Output Format</Label>
+                      <Select defaultValue="pdf">
+                        <SelectTrigger id="format">
+                          <SelectValue placeholder="Select format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pdf">PDF</SelectItem>
+                          <SelectItem value="excel">Excel</SelectItem>
+                          <SelectItem value="csv">CSV</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Start Date</Label>
+                      <DatePicker date={startDate} setDate={setStartDate} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>End Date</Label>
+                      <DatePicker date={endDate} setDate={setEndDate} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="additional-filters">Additional Filters</Label>
+                    <Input id="additional-filters" placeholder="e.g., specific doctors, departments, etc." />
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline">Reset</Button>
+                  <Button>Generate Report</Button>
+                </CardFooter>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Reports</CardTitle>
+                  <CardDescription>Previously generated patient reports</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                            <FileText className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Patient Visits Report</p>
+                            <p className="text-xs text-muted-foreground">
+                              Generated on {new Date(Date.now() - i * 86400000).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <Button variant="ghost" size="sm">
+                          <Download className="h-4 w-4" />
+                          <span className="sr-only">Download</span>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="inventory" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Inventory Reports</CardTitle>
+                  <CardDescription>Generate reports on medical supplies, medications, and equipment.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="inventory-report-type">Report Type</Label>
+                      <Select defaultValue="stock">
+                        <SelectTrigger id="inventory-report-type">
+                          <SelectValue placeholder="Select report type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="stock">Current Stock</SelectItem>
+                          <SelectItem value="expiring">Expiring Items</SelectItem>
+                          <SelectItem value="usage">Usage Trends</SelectItem>
+                          <SelectItem value="reorder">Reorder Recommendations</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="inventory-format">Output Format</Label>
+                      <Select defaultValue="pdf">
+                        <SelectTrigger id="inventory-format">
+                          <SelectValue placeholder="Select format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pdf">PDF</SelectItem>
+                          <SelectItem value="excel">Excel</SelectItem>
+                          <SelectItem value="csv">CSV</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Category</Label>
+                      <Select defaultValue="all">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Categories</SelectItem>
+                          <SelectItem value="medications">Medications</SelectItem>
+                          <SelectItem value="supplies">Medical Supplies</SelectItem>
+                          <SelectItem value="equipment">Equipment</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <Select defaultValue="all">
+                        <SelectTrigger id="location">
+                          <SelectValue placeholder="Select location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Locations</SelectItem>
+                          <SelectItem value="main">Main Storage</SelectItem>
+                          <SelectItem value="pharmacy">Pharmacy</SelectItem>
+                          <SelectItem value="emergency">Emergency Department</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline">Reset</Button>
+                  <Button>Generate Report</Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="financial" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Financial Reports</CardTitle>
+                  <CardDescription>Generate reports on revenue, expenses, and financial performance.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="financial-report-type">Report Type</Label>
+                      <Select defaultValue="revenue">
+                        <SelectTrigger id="financial-report-type">
+                          <SelectValue placeholder="Select report type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="revenue">Revenue</SelectItem>
+                          <SelectItem value="expenses">Expenses</SelectItem>
+                          <SelectItem value="profit">Profit & Loss</SelectItem>
+                          <SelectItem value="billing">Billing Summary</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="financial-period">Time Period</Label>
+                      <Select defaultValue="month">
+                        <SelectTrigger id="financial-period">
+                          <SelectValue placeholder="Select time period" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="week">Weekly</SelectItem>
+                          <SelectItem value="month">Monthly</SelectItem>
+                          <SelectItem value="quarter">Quarterly</SelectItem>
+                          <SelectItem value="year">Yearly</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline">Reset</Button>
+                  <Button>Generate Report</Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="staff" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Staff Reports</CardTitle>
+                  <CardDescription>
+                    Generate reports on staff performance, scheduling, and productivity.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="staff-report-type">Report Type</Label>
+                      <Select defaultValue="performance">
+                        <SelectTrigger id="staff-report-type">
+                          <SelectValue placeholder="Select report type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="performance">Performance</SelectItem>
+                          <SelectItem value="scheduling">Scheduling</SelectItem>
+                          <SelectItem value="productivity">Productivity</SelectItem>
+                          <SelectItem value="attendance">Attendance</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="department">Department</Label>
+                      <Select defaultValue="all">
+                        <SelectTrigger id="department">
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Departments</SelectItem>
+                          <SelectItem value="medical">Medical Staff</SelectItem>
+                          <SelectItem value="nursing">Nursing</SelectItem>
+                          <SelectItem value="admin">Administrative</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline">Reset</Button>
+                  <Button>Generate Report</Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </main>
+      </div>
+    </div>
+  )
+}
+
