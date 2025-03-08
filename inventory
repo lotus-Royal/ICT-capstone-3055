@@ -1,0 +1,353 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { DashboardNav } from "@/components/dashboard-nav"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { AlertTriangle, Download, Filter, Plus, Search } from "lucide-react"
+
+// Sample inventory data
+const inventoryItems = [
+  {
+    id: 1,
+    name: "Disposable Gloves",
+    category: "Supplies",
+    quantity: 1200,
+    unit: "boxes",
+    status: "In Stock",
+    location: "Main Storage",
+    expiry: "N/A",
+  },
+  {
+    id: 2,
+    name: "Ibuprofen 200mg",
+    category: "Medication",
+    quantity: 350,
+    unit: "bottles",
+    status: "Low Stock",
+    location: "Pharmacy",
+    expiry: "12/2025",
+  },
+  {
+    id: 3,
+    name: "Blood Pressure Monitor",
+    category: "Equipment",
+    quantity: 15,
+    unit: "units",
+    status: "In Stock",
+    location: "Examination Rooms",
+    expiry: "N/A",
+  },
+  {
+    id: 4,
+    name: "Surgical Masks",
+    category: "Supplies",
+    quantity: 2500,
+    unit: "pieces",
+    status: "In Stock",
+    location: "Main Storage",
+    expiry: "06/2026",
+  },
+  {
+    id: 5,
+    name: "Amoxicillin 500mg",
+    category: "Medication",
+    quantity: 120,
+    unit: "boxes",
+    status: "Low Stock",
+    location: "Pharmacy",
+    expiry: "03/2025",
+  },
+  {
+    id: 6,
+    name: "Stethoscope",
+    category: "Equipment",
+    quantity: 8,
+    unit: "units",
+    status: "In Stock",
+    location: "Examination Rooms",
+    expiry: "N/A",
+  },
+  {
+    id: 7,
+    name: "Bandages",
+    category: "Supplies",
+    quantity: 450,
+    unit: "boxes",
+    status: "In Stock",
+    location: "Main Storage",
+    expiry: "08/2026",
+  },
+  {
+    id: 8,
+    name: "Insulin",
+    category: "Medication",
+    quantity: 75,
+    unit: "vials",
+    status: "Critical Low",
+    location: "Pharmacy",
+    expiry: "04/2025",
+  },
+  {
+    id: 9,
+    name: "Examination Table",
+    category: "Equipment",
+    quantity: 6,
+    unit: "units",
+    status: "In Stock",
+    location: "Examination Rooms",
+    expiry: "N/A",
+  },
+  {
+    id: 10,
+    name: "Syringes",
+    category: "Supplies",
+    quantity: 800,
+    unit: "boxes",
+    status: "In Stock",
+    location: "Main Storage",
+    expiry: "10/2026",
+  },
+]
+
+export default function InventoryPage() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filteredItems, setFilteredItems] = useState(inventoryItems)
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value
+    setSearchTerm(term)
+
+    if (term.trim() === "") {
+      setFilteredItems(inventoryItems)
+    } else {
+      const filtered = inventoryItems.filter(
+        (item) =>
+          item.name.toLowerCase().includes(term.toLowerCase()) ||
+          item.category.toLowerCase().includes(term.toLowerCase()) ||
+          item.location.toLowerCase().includes(term.toLowerCase()),
+      )
+      setFilteredItems(filtered)
+    }
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <div className="flex flex-1">
+        <DashboardNav />
+        <main className="flex-1 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold tracking-tight">Inventory Management</h1>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Filter className="mr-2 h-4 w-4" />
+                Filters
+              </Button>
+              <Button variant="outline" size="sm">
+                <Download className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Item
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Inventory Item</DialogTitle>
+                    <DialogDescription>Enter the details of the new inventory item below.</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Name
+                      </Label>
+                      <Input id="name" placeholder="Item name" className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="category" className="text-right">
+                        Category
+                      </Label>
+                      <Select>
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="supplies">Supplies</SelectItem>
+                          <SelectItem value="medication">Medication</SelectItem>
+                          <SelectItem value="equipment">Equipment</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="quantity" className="text-right">
+                        Quantity
+                      </Label>
+                      <Input id="quantity" type="number" placeholder="0" className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="location" className="text-right">
+                        Location
+                      </Label>
+                      <Select>
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder="Select location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="main">Main Storage</SelectItem>
+                          <SelectItem value="pharmacy">Pharmacy</SelectItem>
+                          <SelectItem value="exam">Examination Rooms</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="expiry" className="text-right">
+                        Expiry Date
+                      </Label>
+                      <Input id="expiry" type="date" className="col-span-3" />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Add Item</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+          <Tabs defaultValue="all" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="all">All Items</TabsTrigger>
+              <TabsTrigger value="supplies">Supplies</TabsTrigger>
+              <TabsTrigger value="medications">Medications</TabsTrigger>
+              <TabsTrigger value="equipment">Equipment</TabsTrigger>
+              <TabsTrigger value="alerts">
+                Alerts
+                <Badge variant="destructive" className="ml-2">
+                  7
+                </Badge>
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="all" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle>Inventory Items</CardTitle>
+                  <CardDescription>Manage your medical supplies, medications, and equipment.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center mb-4">
+                    <div className="relative w-full max-w-sm">
+                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="search"
+                        placeholder="Search inventory..."
+                        className="pl-8"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                      />
+                    </div>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Expiry</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredItems.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell className="font-medium">{item.name}</TableCell>
+                          <TableCell>{item.category}</TableCell>
+                          <TableCell>
+                            {item.quantity} {item.unit}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                item.status === "In Stock"
+                                  ? "default"
+                                  : item.status === "Low Stock"
+                                    ? "outline"
+                                    : "destructive"
+                              }
+                            >
+                              {item.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{item.location}</TableCell>
+                          <TableCell>{item.expiry}</TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="ghost" size="sm">
+                              Edit
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="alerts" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Inventory Alerts</CardTitle>
+                  <CardDescription>
+                    Items that require attention due to low stock or approaching expiry.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {inventoryItems
+                      .filter((item) => item.status === "Low Stock" || item.status === "Critical Low")
+                      .map((item) => (
+                        <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center gap-4">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-100">
+                              <AlertTriangle className="h-5 w-5 text-amber-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{item.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {item.status} - {item.quantity} {item.unit} remaining
+                              </p>
+                            </div>
+                          </div>
+                          <Button size="sm">Reorder</Button>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </main>
+      </div>
+    </div>
+  )
+}
+
